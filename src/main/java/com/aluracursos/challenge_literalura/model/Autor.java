@@ -1,27 +1,39 @@
-package com.aluracursos.challenge_literalura.modelos;
+package com.aluracursos.challenge_literalura.model;
 
 import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Entity
+@Table(name = "autores")
 public class Autor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
     private String nombre;
-    private Integer fechaDeNacimiento;
-    private Integer fechaDeMuerte;
-
+    private Integer fechaNacimiento;
+    private Integer fechaFallecimiento;
     @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Libros> libros = new ArrayList<>();
+    private List<Libro> listaLibros;
 
-    public Autor() {
+    public Autor(List<DatosAutor> autor) {
     }
 
-    public Autor(DatosAutor datosAutor){
+    public Autor(DatosAutor datosAutor) {
         this.nombre = datosAutor.nombre();
-        this.fechaDeNacimiento = datosAutor.fechaDeNacimiento();
-        this.fechaDeMuerte = datosAutor.fechaDeMuerte();
+        this.fechaNacimiento = datosAutor.fechaNacimiento();
+        this.fechaFallecimiento = datosAutor.fechaFallecimiento();
+
+    }
+
+    public Long getId() {
+        return Id;
+    }
+
+    public void setId(Long id) {
+        Id = id;
     }
 
     public String getNombre() {
@@ -32,46 +44,42 @@ public class Autor {
         this.nombre = nombre;
     }
 
-    public Integer getfechaDeNacimiento() {
-        return fechaDeNacimiento;
+    public Integer getFechaNacimiento() {
+        return fechaNacimiento;
     }
 
-    public void setFechaDeNacimiento(Integer fechaDeNacimiento) {
-        this.fechaDeNacimiento = fechaDeNacimiento;
+    public void setFechaNacimiento(Integer fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
     }
 
-    public Integer getFechaDeMuerte() {
-        return fechaDeMuerte;
+    public Integer getFechaFallecimiento() {
+        return fechaFallecimiento;
     }
 
-    public void setFechaDeMuerte(Integer fechaDeMuerte) {
-        this.fechaDeMuerte = fechaDeMuerte;
+    public void setFechaFallecimiento(Integer fechaFallecimiento) {
+        this.fechaFallecimiento = fechaFallecimiento;
     }
 
-    public List<Libros> getLibros() {
-        return libros;
+    public List<String> getListaLibros() {
+        return listaLibros.stream()
+                .map(Libro::getTitulo)
+                .collect(Collectors.toList());
     }
 
-    public void setLibros(List<Libros> libros) {
-        this.libros = libros;
+    public void setListaLibros(Libro listaLibros) {
+        var librosAutor = new ArrayList<>();
+        librosAutor.add(listaLibros);
+        listaLibros.setAutor(this);
     }
 
     @Override
-    // Obtener solo el título de los libros
     public String toString() {
-        StringBuilder librosTitulos = new StringBuilder();
-        for (Libros libros : libros) {
-            librosTitulos.append(libros.getTitulo()).append(", ");
-        }
-
-        // Eliminar la última coma y espacio
-        if (librosTitulos.length() > 0) {
-            librosTitulos.setLength(librosTitulos.length() - 2);
-        }
-
-        return  "Autor: " + nombre + "\n" +
-                "Fecha de nacimiento: " + fechaDeNacimiento + "\n" +
-                "Fecha de fallecimiento: " + fechaDeMuerte + "\n" +
-                "Libros: " + librosTitulos + "\n";
+        return "------------------Autor------------------" + "\n" +
+                "   Autor: " + nombre  + "\n" +
+                "   fechaNacimiento: " + fechaNacimiento + "\n" +
+                "   fechaFallecimiento: " + fechaFallecimiento + "\n" +
+                "   libros: " + getListaLibros() + "\n" +
+                "----------------------------------------";
     }
+
 }

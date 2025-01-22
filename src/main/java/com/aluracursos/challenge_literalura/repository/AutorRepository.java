@@ -1,11 +1,15 @@
-package com.aluracursos.challenge_literalura.repositorio;
+package com.aluracursos.challenge_literalura.repository;
 
-import com.aluracursos.challenge_literalura.modelos.Autor;
+import com.aluracursos.challenge_literalura.model.Autor;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AutorRepository extends JpaRepository<Autor, Long> {
-    Autor findByNombreIgnoreCase(String nombre);
-    List<Autor> findByFechaDeNacimientoLessThanEqualAndFechaDeMuerteGreaterThanEqual(int añoInicial, int añoFinal);
+    Optional<Autor> findByNombreContainsIgnoreCase(String nombreAutor);
+
+    @Query("SELECT a FROM Autor a WHERE a.fechaNacimiento<= :yearVivo AND a.fechaFallecimiento> :yearVivo")
+    List<Autor> autoresVivoDuranteEseYear(int yearVivo);
 }

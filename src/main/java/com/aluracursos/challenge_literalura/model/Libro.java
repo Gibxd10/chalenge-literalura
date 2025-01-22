@@ -1,42 +1,37 @@
 package com.aluracursos.challenge_literalura.model;
 
 import jakarta.persistence.*;
-import java.util.Arrays;
-import java.util.List;
 
 @Entity
 @Table(name = "libros")
-public class Libros {
+public class Libro {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
-
-    @Column(unique = true)
     private String titulo;
-
+    private String nombreAutor;
+    private String idiomas;
+    private Integer conteoDeDescargas;
     @ManyToOne
-    @JoinColumn(name = "autor_id", nullable = false)
     private Autor autor;
 
-    @Column(name = "nombre_autor")
-    private String nombreAutor;
-
-
-    private String idiomas;
-    private Double numeroDeDescargas;
-
-    public Libros() {}
-
-    public Libros(DatosLibros datosLibros, Autor autor) {
-        this.titulo = datosLibros.titulo();
+    public Libro(DatosLibro datosLibro, Autor autor) {
+        this.titulo = datosLibro.titulo();
         this.autor = autor;
         this.nombreAutor = autor.getNombre();
-        setIdiomas(datosLibros.idiomas());
-        this.numeroDeDescargas = datosLibros.numeroDeDescargas();
+        setIdiomas(String.valueOf(datosLibro.idiomas()));
+        this.conteoDeDescargas = datosLibro.conteoDeDescargas();
+    }
+
+    public Libro(DatosLibro datosLibro) {
     }
 
     public Long getId() {
         return Id;
+    }
+
+    public void setId(Long id) {
+        Id = id;
     }
 
     public String getTitulo() {
@@ -47,6 +42,30 @@ public class Libros {
         this.titulo = titulo;
     }
 
+    public String getNombreAutor() {
+        return nombreAutor;
+    }
+
+    public void setNombreAutor(String nombreAutor) {
+        this.nombreAutor = nombreAutor;
+    }
+
+    public String getIdiomas() {
+        return idiomas;
+    }
+
+    public void setIdiomas(String idiomas) {
+        this.idiomas = idiomas;
+    }
+
+    public Integer getConteoDeDescargas() {
+        return conteoDeDescargas;
+    }
+
+    public void setConteoDeDescargas(Integer conteoDeDescargas) {
+        this.conteoDeDescargas = conteoDeDescargas;
+    }
+
     public Autor getAutor() {
         return autor;
     }
@@ -55,30 +74,14 @@ public class Libros {
         this.autor = autor;
     }
 
-    public List<String> getIdiomas() {
-        return Arrays.asList(idiomas.split(","));
-    }
-
-    public void setIdiomas(List<String> idiomas) {
-        this.idiomas =  String.join(",", idiomas);
-    }
-
-    public Double getNumeroDeDescargas() {
-        return numeroDeDescargas;
-    }
-
-    public void setNumeroDeDescargas(Double numeroDeDescargas) {
-        this.numeroDeDescargas = numeroDeDescargas;
-    }
-
     @Override
     public String toString() {
-        return  "\n--------------------------------------------\n" +
-                "Libro: \n" +
-                "Título = " + titulo + "\n" +
-                "Autor = " + nombreAutor + "\n" +
-                "Idioma = " + idiomas + "\n" +
-                "Número de descargas = " + numeroDeDescargas +
-                "\n--------------------------------------------\n";
+        return "******************LIBRO*******************\n" +
+                "   Titulo: " + titulo + "\n" +
+                "   Autor: " + (autor != null ? autor.getNombre() : "N/A") + "\n" +
+                "   Idiomas: " + idiomas + "\n" +
+                "   Numero de Descargas:" + conteoDeDescargas + "\n" +
+                "*****************************************";
     }
+
 }
